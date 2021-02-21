@@ -1,0 +1,100 @@
+Sub stocksChallenge():
+'ASSIGNMENT
+        ' loop through all stocks for one year
+        ' loop should output. . .
+            ' ticker symbol, yearly change from opening to closing price
+            ' percent change from opening to closing price
+            ' total stock volume of the stock
+        ' conditional formatting to highlight positive change green and negative change red
+       
+    ' assign variables
+        Dim ticker As String
+        Dim nextTicker As String
+        
+        Dim yearlyChange As Double
+        Dim percentChange As Double
+        Dim totalStock As Double
+        Dim openNum As Double
+        Dim closeNum As Double
+        
+        Dim i As Long
+        Dim nextRow As Long
+        Dim lastRow As Long
+        Dim mySheet As Worksheet
+        Set mySheet = ThisWorkbook.Worksheets("2016")
+        
+        totalStock = 0
+        tick = 1
+        nextRow = 1
+        openNum = mySheet.Cells(2, 3).Value
+        
+        Range("K:K").NumberFormat = "0.00%"
+
+    ' assign names to new columns for outputs
+        Cells(1, 9).Value = "Ticker"
+        Cells(1, 10).Value = "Yearly Change"
+        Cells(1, 11).Value = "Percent Change"
+        Cells(1, 12).Value = "Total Stock Volume"
+    
+        Range("A:M").Columns.AutoFit
+        
+        lastRow = mySheet.Cells(Rows.Count, 1).End(xlUp).Row
+    
+    ' loop through year column (B) and output ticker symbol, yearly change, % change,
+    ' and total stock volume
+        
+        
+        
+        For i = 2 To lastRow
+            ticker = mySheet.Cells(i, 1).Value
+            nextTicker = mySheet.Cells(i + 1, 1).Value
+        
+            If ticker = nextTicker Then
+                totalStock = totalStock + mySheet.Cells(i, 7).Value
+            
+            Else
+                mySheet.Cells(tick + 1, 9).Value = ticker 'prints tickers
+                totalStock = totalStock + mySheet.Cells(i, 7).Value 'continues to add total up
+                
+                closeNum = mySheet.Cells(i, 6).Value 'use close value
+                
+                    If openNum = 0 Then
+                        Dim noValue As String
+                        Dim noValue2 As String
+                        noValue = mySheet.Cells(i, 10).Value
+                        noValue2 = mySheet.Cells(i, 11).Value
+                        
+                        noValue = ("n/a")
+                        noValue2 = ("n/a")
+                       
+                    Else
+                    yearlyChange = closeNum - openNum ' assign calc to year change value)
+                    percentChange = (yearlyChange) / openNum
+                    'assign calc to percent change
+                    End If
+                
+                nextRow = nextRow + 1
+                mySheet.Cells(nextRow, 10).Value = yearlyChange 'print yr change value in cell
+                mySheet.Cells(nextRow, 11).Value = percentChange 'print percent change value in cell
+                mySheet.Cells(nextRow, 12).Value = totalStock 'print total stock in cell
+                
+                tick = tick + 1
+                openNum = mySheet.Cells(i + 1, 3).Value 'going through open values
+                totalStock = 0
+                
+            End If
+              
+        Next i
+                  
+    ' conditional formatting, positive change green, negative change red
+    
+        For i = 2 To lastRow
+            changeVal = mySheet.Cells(i, 10).Value
+            If changeVal < 0 Then
+                mySheet.Cells(i, 10).Interior.ColorIndex = 3
+            ElseIf changeVal > 0 Then
+                mySheet.Cells(i, 10).Interior.ColorIndex = 4
+            End If
+        Next i
+        
+End Sub
